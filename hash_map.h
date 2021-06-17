@@ -3,18 +3,15 @@
 #include <vector>
 #include <stdexcept>
 
-class iterator;
-class const_iterator;
 
 template<class KeyType, class ValueType, class Hash = std::hash<KeyType> >
 class HashMap {
 public:
-    typedef typename std::list<std::pair<const KeyType, ValueType>>::iterator iterator;
-    typedef typename std::list<std::pair<const KeyType, ValueType>>::const_iterator const_iterator;
+    using iterator = typename std::list<std::pair<const KeyType, ValueType>>::iterator;
+    using const_iterator = typename std::list<std::pair<const KeyType, ValueType>>::const_iterator;
 
 private:
-    size_t Size = 0,
-            Capacity = 0;
+    size_t Size = 0, Capacity = 0;
 
     std::list<std::pair<const KeyType, ValueType>> values;
     std::vector<std::list<iterator>> table;
@@ -49,23 +46,13 @@ public:
         }
     }
 
-    HashMap(const std::initializer_list<std::pair<const KeyType, ValueType>>& elements, const Hash& hasher_ = Hash()) {
-        hasher = hasher_;
-        Capacity = elements.size();
-        table.resize(Capacity);
-        for (const std::pair<const KeyType, ValueType>& i : elements) {
-            insert(i);
-        }
-    }
+    HashMap(const std::initializer_list<std::pair<const KeyType, ValueType>>& elements,
+            const Hash& hasher_ = Hash()) : HashMap(elements.begin(), elements.end(), hasher_) {}
 
     HashMap<KeyType, ValueType, Hash>& operator=(const HashMap<KeyType, ValueType, Hash>& other) {
         if (begin() != other.begin()) {
             clear();
-            Capacity = other.size();
-            table.resize(Capacity);
-            for (std::pair<const KeyType, ValueType> i : other.values){
-                insert(i);
-            }
+            new (this) HashMap(other.values.begin(), other.values.end(), other.hasher);
         }
         return *this;
     }
@@ -106,9 +93,11 @@ public:
         }
     }
 
-    iterator find(const KeyType& key) {
+    // template doesn't help here
+
+    const_iterator find(const KeyType& key) const  {
         int pos = hasher(key) % Capacity;
-        for (iterator& it : table[pos]) {
+        for (const const_iterator& it : table[pos]) {
             if (it->first == key) {
                 return it;
             }
@@ -116,9 +105,9 @@ public:
         return values.end();
     }
 
-    const_iterator find(const KeyType& key) const  {
+    iterator find(const KeyType& key) {
         int pos = hasher(key) % Capacity;
-        for (const const_iterator& it : table[pos]) {
+        for (iterator& it : table[pos]) {
             if (it->first == key) {
                 return it;
             }
