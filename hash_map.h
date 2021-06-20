@@ -3,6 +3,7 @@
 #include <vector>
 #include <stdexcept>
 
+// hope for the best
 
 template<class KeyType, class ValueType, class Hash = std::hash<KeyType> >
 class HashMap {
@@ -15,8 +16,6 @@ private:
 
     std::list<std::pair<const KeyType, ValueType>> values;
     std::vector<std::list<iterator>> table;
-
-    Hash hasher;
 
     void expand() {
         table.clear();
