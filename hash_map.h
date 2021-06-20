@@ -17,6 +17,8 @@ private:
     std::list<std::pair<const KeyType, ValueType>> values;
     std::vector<std::list<iterator>> table;
 
+    Hash hasher;
+
     void expand() {
         table.clear();
         Capacity *= 2;
