@@ -3,7 +3,7 @@
 #include <vector>
 #include <stdexcept>
 
-// hope for the best
+// hope for the best!!!
 
 template<class KeyType, class ValueType, class Hash = std::hash<KeyType> >
 class HashMap {
