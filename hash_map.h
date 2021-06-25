@@ -3,7 +3,7 @@
 #include <vector>
 #include <stdexcept>
 
-// hope for the best
+// hope for the best!!!
 
 template<class KeyType, class ValueType, class Hash = std::hash<KeyType> >
 class HashMap {
@@ -26,6 +26,12 @@ private:
         for (iterator it = values.begin(); it != values.end(); ++it) {
             int pos = hasher(it->first) % Capacity;
             table[pos].push_back(it);
+        }
+    }
+
+    void reduce() {
+        if (Size * 4 <= Capacity) {
+            new (this) HashMap(values.begin(), values.end(), hasher);
         }
     }
 
@@ -92,6 +98,8 @@ public:
                 return;
             }
         }
+
+        reduce();
     }
 
     // template doesn't help here
