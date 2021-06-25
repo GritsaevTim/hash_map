@@ -29,6 +29,12 @@ private:
         }
     }
 
+    void reduce() {
+        if (Size * 4 <= Capacity) {
+            new (this) HashMap(values.begin(), values.end(), hasher);
+        }
+    }
+
 public:
 
     HashMap(const Hash& hasher_ = Hash()): hasher(hasher_) {
@@ -92,6 +98,8 @@ public:
                 return;
             }
         }
+
+        reduce();
     }
 
     // template doesn't help here
